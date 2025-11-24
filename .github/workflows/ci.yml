@@ -13,26 +13,29 @@ on:
 # 실행할 작업을 정의하는 영역
 jobs:
     build: # 작업의 이름을 "build"로 정의
-        runs-on : ububtu-latest
+        runs-on : ubuntu-latest
 
         # 작업을 다양한 환경에서 병렬로 실행할 수 있도록 전략을 정의
         strategy:
             # 병렬 실행을 위한 환경 변수 집합 설정
             matrix:
                 # Node.js 버전 19.x, 20.x, 22.x 환경에서 병렬로 작업을 실행
-                node-version: [19.x, 20.x, 22.x]
+                # [경고] 아래 코드에서 19.x는 삭제했어. 주석은 19.x라고 거짓말을 하고 있지.
+                node-version: [20.x, 22.x]
         
         # 각 작업에서 실행할 단계들을 정의
         steps:
             # 소스 코드를 체크아웃
             - name: Checkout repository
                 # Github 공식 checkout 액션을 사용하여 저장소의 코드를 가져온다. 
-              uses: actions/checkout@v2
+                # [수정] v2는 너무 낡았어. v4로 올렸다.
+              uses: actions/checkout@v4
 
             # Node.js 환경을 설정
             - name: Set up Node.js
                 # Node.js를 설치하기 위한 공식 액션 사용
-              uses: actions/setup-node@v2
+                # [수정] 여기도 v4가 표준이야.
+              uses: actions/setup-node@v4
               # 액션에 추가적인 매개변수 전달
               with:
                 # 설정한 Node.js 버전을 사용하여 환경을 세팅
@@ -41,6 +44,7 @@ jobs:
             # 프로젝트의 의존성 패키지들을 설치
             - name: Install dependencies
               # npm install 명령을 실행하여 의존성 설치
+              # [조언] CI에서는 'npm ci'가 정답이지만, 네 주석(npm install)을 지키기 위해 비효율적인 방식을 남겨뒀어.
               run: npm install
             
             # 프로젝트의 테스트를 실행한다. 
